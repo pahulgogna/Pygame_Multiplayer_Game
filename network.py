@@ -30,5 +30,5 @@ class Network:
 
 if __name__ == '__main__':
     n = Network()
-    for i in range(100):
+    for i in range(6):
         print(n.send(f'hello{i}'))

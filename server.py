@@ -7,7 +7,7 @@ from scripts.entities import Player
 PlayerData = [{'movement':[0,0], 'pos': [50,50],}, {'movement':[0,0], 'pos': [75,50],}]
 
 class Server:
-    def __init__(self, server='192.168.1.116', port=5555) -> None:
+    def __init__(self, server='', port=5555) -> None:
         self.server = server
         self.port = port
 
