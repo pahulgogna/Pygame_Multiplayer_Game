@@ -54,7 +54,6 @@ class PhysicsEntity:
     def set_action(self, action, game):
         if action != self.action:
             self.action = action
-            print(self.type)
             self.animation = game.assets[self.type + '/' + self.action].copy()
 
 
