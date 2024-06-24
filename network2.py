@@ -1,29 +1,26 @@
 import socket
 import pickle
-import time
+
 class Network:
     def __init__(self) -> None:
 
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = '192.168.1.6'
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.server = '127.0.0.1'
         self.port = 5555
         self.addr = (self.server,self.port)
         self.p = self.connect()
 
     def get_p(self):
         return self.p
-
+    
     def connect(self):
-        try:
-            self.client.connect(self.addr)
-            return pickle.loads(self.client.recv(2048))
-        except:
-            pass
+        self.client.sendto(pickle.dumps('start'), self.addr)
+        return pickle.loads(self.client.recvfrom(1024)[0])
 
     def send(self, data):
         try:
-            self.client.send(pickle.dumps(data))
-            dat= pickle.loads(self.client.recv(2048))
+            self.client.sendto(pickle.dumps(data), self.addr)
+            dat= pickle.loads(self.client.recvfrom(1024)[0])
             return dat
         except socket.error as e:
             print(e)

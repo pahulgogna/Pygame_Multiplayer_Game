@@ -6,7 +6,7 @@ from scripts.clouds import Clouds
 import random
 from scripts.particle import Particle
 import math
-from network import Network
+from network2 import Network
 
 
 class Game:
@@ -45,6 +45,7 @@ class Game:
         self.pos = [100,200]
 
         pdata = self.network.get_p()
+        # print(pdata)
         self.player = Player(pdata['pos'], (8,15))
         self.p2 = Player((50,50), (8,15))
          
@@ -76,6 +77,7 @@ class Game:
             player_data = self.network.send({'movement':self.player.frame_movement, 'pos': self.player.pos})
             self.p2.frame_movement = player_data['movement']
             self.p2.pos = player_data['pos']
+
             pygame.display.update()
             self.display.blit(pygame.transform.scale(self.assets['background'],self.display.get_size()), (0,0))
             
