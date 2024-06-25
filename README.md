@@ -42,7 +42,7 @@ After this you can run the `main.py` file to start the game (you can also run it
 
 ### Tile Editor
 - This Repository contains a Tile Editor, for creating/editing your own custom maps. A map is already provided for playing, which you can also edit.
-- To use the editor, Just run the editor file and select if you want to create a new map or edit an existing one. to play that map though you have to change path of the map in `main.py`.as of now there is no implementation for swithing maps from the game itself.
+- To use the editor, Just run the editor file and select wheather you want to create a new map or edit an existing one. To play that map though you have to change path of the map in `main.py`. As of now there is no implementation for swithing maps from the game itself.
 ## Screenshots
 
 ![Game Screenshot](https://github.com/PahulGogna/Pygame_Multiplayer_Game/assets/135852041/a2f065c6-8483-41d9-aaa9-5a2fdbb59f96)
