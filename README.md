@@ -45,6 +45,6 @@ After this you can run the `main.py` file to start the game (you can also run it
 - To use the editor, Just run the editor file and select if you want to create a new map or edit an existing one. to play that map though you have to change path of the map in `main.py`.as of now there is no implementation for swithing maps from the game itself.
 ## Screenshots
 
-![Game Screenshot](![Screenshot 2024-06-25 211537](https://github.com/PahulGogna/Pygame_Multiplayer_Game/assets/135852041/a2f065c6-8483-41d9-aaa9-5a2fdbb59f96))
+![Game Screenshot](https://github.com/PahulGogna/Pygame_Multiplayer_Game/assets/135852041/a2f065c6-8483-41d9-aaa9-5a2fdbb59f96)
 
-![Game Screencapture](https://github.com/PahulGogna/Pygame_Multiplayer_Game/assets/135852041/223985da-15b0-4e05-83ae-f00ffca063de)
+https://github.com/PahulGogna/Pygame_Multiplayer_Game/assets/135852041/223985da-15b0-4e05-83ae-f00ffca063de
