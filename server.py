@@ -1,64 +1,72 @@
+# the server and network with a 2 in their names use the UDP protocol, which results in faster response times
+
+import random
 import socket
 from _thread import *
 import pickle
-import pygame
-from scripts.entities import Player
 
-PlayerData = [{'movement':[0,0], 'pos': [50,50],}, {'movement':[0,0], 'pos': [75,50],}]
+positions = [[150,-250], [-40,-250],[-153, 33.6],[-306, -79], [829, -207],[172, 81.6],[629, 33]]
+
+start = {'movement':[0,0], 'pos': [-40,-250]}
+PlayerData = {} 
 
 class Server:
     def __init__(self, server='', port=5555) -> None:
         self.server = server
         self.port = port
 
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
         try:
             self.s.bind((self.server, self.port))
         except socket.error as e:
             print(e)
 
-        self.s.listen(2)
-        print('Waiting for Connection, Server Started')
+        print('Server Startup Complete')
 
-    def threaded_client(self, conn, player):
-        print("Player:",player)
-        conn.send(pickle.dumps(PlayerData[player]))
-        while True:
-            try:
-                data = pickle.loads(conn.recv(204))
-                PlayerData[player] = data
+    # def get_players():
 
-                if player == 1:
-                    reply = PlayerData[0]
-                else:
-                    reply = PlayerData[1]
-                
-                if not data:
-                    print('Disconnected')
-                    break
-                # else:
-                    # print('Received:', data)
-                    # print('Sending:', reply)
-
-                conn.sendall(pickle.dumps(reply))
-
-            except :
-                break
-        print('Lost Connection')
-        conn.close()
 
     def start(self):
-        currentPlayer = 0
-        while True:
-            conn, addr = self.s.accept()  # conn -> obj telling what is connected, addr -> ip address
-            print('Connected to:',addr)
-            # print(currentPlayer)
-            start_new_thread(self.threaded_client, (conn, currentPlayer))
-            currentPlayer += 1
-            if currentPlayer > 1:
-                currentPlayer = 0
+        # while True:
+        #     recv, addr = self.s.recvfrom(1024)
+        #     dat = pickle.loads(recv)
+        #     print(dat)
+        #     if dat == 'start':
+        #         self.s.sendto(pickle.dumps(start), addr)
+        #         break
 
+        while True:
+            try:
+                data, addr = self.s.recvfrom(1024)
+                data = pickle.loads(data)
+                if data == 'start':
+                    start['pos'] = random.choice(positions)
+                    PlayerData[make_key(addr)] = start
+                    self.s.sendto(pickle.dumps(start), addr)
+                    # print(PlayerData)
+                    continue
+
+                elif data == 'quit':
+                    del PlayerData[make_key(addr)]
+                
+                elif make_key(addr) in PlayerData:
+                    PlayerData[make_key(addr)] = data
+                    print(PlayerData)
+                    
+                # else:
+                #     key = make_key(addr)
+                #     PlayerData[key] = start
+                #     new_player = key
+                #     PlayerData[key] = data
+                    # self.s.sendto(pickle.dumps({'playerData':copy, 'new_player': new_player}), addr)
+
+                self.s.sendto(pickle.dumps(PlayerData), addr)
+            except socket.error as e:
+                print(e)
+
+def make_key(addr: tuple):
+    return addr[0] + ';' + str(addr[1])
 
 server = Server()
 

@@ -6,7 +6,7 @@ from scripts.clouds import Clouds
 import random
 from scripts.particle import Particle
 import math
-from network2 import Network
+from network import Network
 
 class Game:
     def __init__(self) -> None:
