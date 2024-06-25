@@ -1,6 +1,9 @@
 import socket
 import pickle
 
+def make_key(addr: tuple):
+    return addr[0] + ';' + str(addr[1])
+
 class Network:
     def __init__(self) -> None:
 
@@ -15,7 +18,8 @@ class Network:
     
     def connect(self):
         self.client.sendto(pickle.dumps('start'), self.addr)
-        return pickle.loads(self.client.recvfrom(1024)[0])
+        data, addr = self.client.recvfrom(1024)
+        return pickle.loads(data), make_key(addr)
 
     def send(self, data):
         try:

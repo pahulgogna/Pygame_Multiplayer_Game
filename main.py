@@ -1,5 +1,5 @@
 import pygame, sys
-from scripts.entities import PhysicsEntity, Player
+from scripts.entities import Player
 from scripts.utils import loadImage, loadImages, Animation
 from scripts.tilemap import TileMap
 from scripts.clouds import Clouds
@@ -8,7 +8,6 @@ from scripts.particle import Particle
 import math
 from network2 import Network
 
-
 class Game:
     def __init__(self) -> None:
         pygame.init()
@@ -16,7 +15,7 @@ class Game:
     
         self.display = pygame.Surface((320,240))
 
-        pygame.display.set_caption('')
+        pygame.display.set_caption('Multiplayer Ninja Game')
 
         self.clock = pygame.time.Clock()
 
@@ -42,17 +41,17 @@ class Game:
 
         self.network = Network()
 
+        self.players = {}
+
         self.pos = [100,200]
 
-        pdata = self.network.get_p()
-        # print(pdata)
+        pdata, self.addr = self.network.get_p()
         self.player = Player(pdata['pos'], (8,15))
-        self.p2 = Player((50,50), (8,15))
          
 
         self.tilemap = TileMap(self)
 
-        self.p2.update(self, self.tilemap,(0, 0))
+        self.player.update(self, self.tilemap,(0, 0))
 
         self.offset = [0,0]
 
@@ -69,15 +68,15 @@ class Game:
 
         self.particles = []
 
+        self.number_of_players = 1
 
+    def quit(self):
+        # del self.players[self.addr]
+        self.network.send('quit')
+        
 
     def run(self):
         while True:
-            self.player.update(self,self.tilemap,(self.movement[1] - self.movement[0],0))
-            player_data = self.network.send({'movement':self.player.frame_movement, 'pos': self.player.pos})
-            self.p2.frame_movement = player_data['movement']
-            self.p2.pos = player_data['pos']
-
             pygame.display.update()
             self.display.blit(pygame.transform.scale(self.assets['background'],self.display.get_size()), (0,0))
             
@@ -86,6 +85,8 @@ class Game:
 
             render_offset = (int(self.offset[0]),int(self.offset[1]))
 
+            self.player.update(self,self.tilemap,(self.movement[1] - self.movement[0],0))
+            player_data = self.network.send({'movement':self.player.frame_movement, 'pos': self.player.pos})
             
             self.clouds.update()
             self.clouds.render(self.display, render_offset)
@@ -107,13 +108,21 @@ class Game:
                     particle.pos[0] += math.sin(particle.animation.frame*.035) * .3
                 if kill:    
                     self.particles.remove(particle)
-            
-            self.p2.update(self, self.tilemap,player_data['movement'])
-            self.player.render(self.display, offset = render_offset)
-            self.p2.render(self.display,render_offset)
+        
+            for key in player_data:
+                if key in self.players.keys():
+                    self.players[key].frame_movement = player_data[key]['movement']
+                    self.players[key].pos = player_data[key]['pos']
+                    if self.addr != key:
+                        # self.player.update(self,self.tilemap,(self.movement[1] - self.movement[0],0))
+                        self.players[key].update(self, self.tilemap,player_data[key]['movement'])
+                        self.players[key].render(self.display,render_offset)
+                else:
+                    self.players[key] = Player(player_data[key]['pos'], (8,15))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.quit()
                     pygame.quit()
                     sys.exit()
                 
@@ -133,6 +142,10 @@ class Game:
                             self.player.velocity[0] = -5
                         else:
                             self.player.velocity[0] = 5
+                    if event.key == pygame.K_ESCAPE:
+                        self.quit()
+                        pygame.quit()
+                        sys.exit()
                 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
