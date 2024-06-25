@@ -15,7 +15,7 @@ This is the first ever Multiplayer Game that I am making.
 
 
 ### The Game
-perform these steps on all the machines you want play the game on.
+perform these steps on all the machines you want to play the game on.
 \
 \
 create a copy of this Repository locally using
