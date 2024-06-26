@@ -2,42 +2,6 @@ import pygame
 
 pygameSurf = pygame.surface.Surface
 
-class PickleableSurface(pygameSurf):
-    def __init__(self, *arg,**kwarg):
-        size = arg[0]
-
-        # size given is not an iterable,  but the object of pygameSurf itself
-        if (isinstance(size, pygameSurf)):
-            pygameSurf.__init__(self, size=size.get_size(), flags=size.get_flags())
-            self.surface = self
-            self.name='test'
-            self.blit(size, (0, 0))
-
-        else:
-            pygameSurf.__init__(self, *arg, **kwarg)
-            self.surface = self
-            self.name = 'test'
-
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        surface = state["surface"]
-
-        _1 = pygame.image.tostring(surface.copy(), "RGBA")
-        _2 = surface.get_size()
-        _3 = surface.get_flags()
-        state["surface_string"] = (_1, _2, _3)
-        return state
-
-    def __setstate__(self, state):
-        surface_string, size, flags = state["surface_string"]
-
-        pygameSurf.__init__(self, size=size, flags=flags)
-
-        s=pygame.image.fromstring(surface_string, size, "RGBA")
-        state["surface"] =s;
-        self.blit(s,(0,0));self.surface=self;
-        self.__dict__.update(state)
-
 class PhysicsEntity:
     def __init__(self, e_type, pos, size) -> None:
         self.first = True

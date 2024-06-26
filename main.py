@@ -71,7 +71,6 @@ class Game:
         self.number_of_players = 1
 
     def quit(self):
-        # del self.players[self.addr]
         self.network.send('quit')
         
 
@@ -114,7 +113,6 @@ class Game:
                     self.players[key].frame_movement = player_data[key]['movement']
                     self.players[key].pos = player_data[key]['pos']
                     if self.addr != key:
-                        # self.player.update(self,self.tilemap,(self.movement[1] - self.movement[0],0))
                         self.players[key].update(self, self.tilemap,player_data[key]['movement'])
                         self.players[key].render(self.display,render_offset)
                 else:
